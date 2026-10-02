@@ -1,0 +1,6 @@
+{
+  "name": "CM DocFlow AI",
+  "description": "Every document. One simple workflow. Premium document conversion, PDF processing, compression, and image utilities.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

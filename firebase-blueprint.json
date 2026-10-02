@@ -1,0 +1,107 @@
+{
+  "entities": {
+    "user": {
+      "title": "User",
+      "description": "User profile with plan, authentication role, and status.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "name": { "type": "string", "maxLength": 100 },
+        "email": { "type": "string", "maxLength": 150 },
+        "photoURL": { "type": "string", "maxLength": 500 },
+        "role": { "type": "string", "enum": ["user", "admin"] },
+        "plan": { "type": "string", "enum": ["free", "pro"] },
+        "subscriptionStatus": { "type": "string", "enum": ["active", "cancelled", "past_due", "none"] },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "lastLoginAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["userId", "email", "role", "plan", "subscriptionStatus", "createdAt"]
+    },
+    "usage": {
+      "title": "Usage",
+      "description": "Daily tool usage records tracked per tool per user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "maxLength": 128 },
+        "toolId": { "type": "string", "maxLength": 64 },
+        "date": { "type": "string", "maxLength": 20 },
+        "usageCount": { "type": "number" },
+        "limit": { "type": "number" },
+        "remainingUses": { "type": "number" },
+        "updatedAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["userId", "toolId", "date", "usageCount"]
+    },
+    "processingJob": {
+      "title": "ProcessingJob",
+      "description": "Historical record of document processing operations.",
+      "type": "object",
+      "properties": {
+        "jobId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "toolId": { "type": "string", "maxLength": 64 },
+        "inputFileName": { "type": "string", "maxLength": 255 },
+        "outputFileName": { "type": "string", "maxLength": 255 },
+        "status": { "type": "string", "enum": ["completed", "failed"] },
+        "createdAt": { "type": "string", "maxLength": 40 },
+        "processingTimeMs": { "type": "number" },
+        "fileSize": { "type": "number" }
+      },
+      "required": ["jobId", "userId", "toolId", "inputFileName", "status", "createdAt", "fileSize"]
+    },
+    "subscription": {
+      "title": "Subscription",
+      "description": "User billing and payment subscription details.",
+      "type": "object",
+      "properties": {
+        "subscriptionId": { "type": "string", "maxLength": 128 },
+        "userId": { "type": "string", "maxLength": 128 },
+        "planId": { "type": "string", "enum": ["free", "pro"] },
+        "billingCycle": { "type": "string", "enum": ["monthly", "yearly"] },
+        "status": { "type": "string", "enum": ["active", "cancelled", "past_due", "none"] },
+        "provider": { "type": "string", "enum": ["razorpay", "demo"] },
+        "startDate": { "type": "string", "maxLength": 40 },
+        "renewalDate": { "type": "string", "maxLength": 40 },
+        "cancelledAt": { "type": "string", "maxLength": 40 }
+      },
+      "required": ["userId", "planId", "status", "startDate"]
+    },
+    "systemSettings": {
+      "title": "SystemSettings",
+      "description": "Global application configuration editable by admins.",
+      "type": "object",
+      "properties": {
+        "freeDailyLimitPerTool": { "type": "number" },
+        "freeMaxFileSizeMB": { "type": "number" },
+        "proMaxFileSizeMB": { "type": "number" },
+        "priceMonthlyINR": { "type": "number" },
+        "priceYearlyINR": { "type": "number" },
+        "maintenanceMode": { "type": "boolean" },
+        "announcementBanner": { "type": "string", "maxLength": 500 }
+      },
+      "required": ["freeDailyLimitPerTool", "freeMaxFileSizeMB", "proMaxFileSizeMB", "priceMonthlyINR", "priceYearlyINR"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "user",
+      "description": "User account information, role, and current plan status."
+    },
+    "/usage/{usageId}": {
+      "schema": "usage",
+      "description": "Per-tool daily usage counter."
+    },
+    "/processing_jobs/{jobId}": {
+      "schema": "processingJob",
+      "description": "Audit and processing log of operations performed."
+    },
+    "/subscriptions/{subId}": {
+      "schema": "subscription",
+      "description": "Subscription records and billing details."
+    },
+    "/system_settings/{settingId}": {
+      "schema": "systemSettings",
+      "description": "System-wide limits and feature flags."
+    }
+  }
+}
